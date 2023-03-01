@@ -47,7 +47,13 @@ class SubjectController extends Controller
             'description' => $request->description
         ];
 
-        return dd($data);
+        return Subject::create($data) ? redirect()->back()->with(['success' => 'Magic has been spelled!']) : redirect()->back()->with(['error' => 'Magic has failed to spell!']);
+
+        // if(Subject::create($data)) {
+        //     return redirect()->back()->with(['success' => 'Magic has been spelled1']);
+        // } else {
+        //     return redirect()->back()->with(['error' => 'Magic has failed to spell!']);
+        // }
     }
 
     /**
@@ -69,7 +75,7 @@ class SubjectController extends Controller
      */
     public function edit(Subject $subject)
     {
-        //
+        return view('admin.subjects.edit', ['subject' => $subject]);
     }
 
     /**
@@ -81,7 +87,17 @@ class SubjectController extends Controller
      */
     public function update(Request $request, Subject $subject)
     {
-        //
+        $request->validate([
+            'name' => ['required', 'unique:subjects,name,' . $subject->id . ',id'],
+        ]);
+
+        $data = [
+            'name' => $request->name,
+            'slug' => Str::slug($request->name),
+            'description' => $request->description
+        ];
+
+        return $subject->update($data) ? redirect()->back()->with(['success' => 'Magic has been spelled!']) : redirect()->back()->with(['error' => 'Magic has failed to spell!']);
     }
 
     /**
@@ -92,6 +108,6 @@ class SubjectController extends Controller
      */
     public function destroy(Subject $subject)
     {
-        //
+        return $subject->delete() ? redirect()->back()->with(['success' => 'Magic has been spelled!']) : redirect()->back()->with(['error' => 'Magic has failed to spell!']);
     }
 }

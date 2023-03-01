@@ -17,6 +17,7 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-body">
+                            @include('partials.flash-messages')
                             @if (count($subjects))
                                 <table class="table table-bordered">
                                     <thead>
@@ -24,6 +25,7 @@
                                             <th>Sr. No.</th>
                                             <th>Name</th>
                                             <th>Slug</th>
+                                            <th>Topics</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -34,10 +36,16 @@
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $subject->name }}</td>
                                                 <td>{{ $subject->slug }}</td>
+                                                <td>{{ count($subject->topics) }}</td>
                                                 <td>
-                                                    <a href="" class="btn btn-primary">Edit</a>
-                                                    <a href="" class="btn btn-primary">Delete</a>
-                                                    </td>
+                                                    <a href="{{ route('admin.subject.edit', $subject) }}"
+                                                        class="btn btn-primary">Edit</a>
+                                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                                        data-bs-target="#deleteModal"
+                                                        onclick="deleteSubject({{ $subject }})">
+                                                        Delete
+                                                    </button>
+                                                </td>
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -53,4 +61,13 @@
             </div>
         </div>
     </main>
+
+    <script>
+        function deleteSubject(subject) {
+            const deleteFormElement = document.getElementById('deleteForm');
+            var url = "{{ route('admin.subject.delete', ':id') }}";
+            url = url.replace(':id', subject.id);
+            deleteFormElement.action = url;
+        }
+    </script>
 @endsection

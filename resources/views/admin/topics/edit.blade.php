@@ -1,16 +1,16 @@
 @extends('partials.admin.layout')
 
-@section('title', 'Add Subject')
+@section('title', 'Edit Topic')
 
 @section('main')
     <main class="content">
         <div class="container-fluid p-0">
             <div class="row">
                 <div class="col-md-6">
-                    <h1 class="h3 mb-3">Add Subject</h1>
+                    <h1 class="h3 mb-3">Edit Topic</h1>
                 </div>
                 <div class="col-md-6 text-end">
-                    <a href="{{ route('admin.subjects') }}" class="btn btn-outline-primary">Back</a>
+                    <a href="{{ route('admin.topics') }}" class="btn btn-outline-primary">Back</a>
                 </div>
             </div>
             <div class="row">
@@ -18,12 +18,12 @@
                     <div class="card">
                         <div class="card-body">
                             @include('partials.flash-messages')
-                            <form action="{{ route('admin.subject.create') }}" method="post">
+                            <form action="{{ route('admin.topic.edit', $topic) }}" method="post">
                                 @csrf
 
                                 <div class="mb-3">
                                     <label for="" class="form-label">Name</label>
-                                    <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" id="name" value="{{ old('name') }}" placeholder="Enter the subject name!">
+                                    <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" id="name" value="{{ old('name') ? old('name') : $topic->name }}" placeholder="Enter the topic name!">
 
                                     @error('name')
                                         <div class="text-danger">
@@ -35,7 +35,7 @@
                                 <div class="mb-3">
                                     <label for="" class="form-label">Description</label>
 
-                                    <textarea class="form-control" name="description" id="description" cols="30" rows="3" placeholder="Enter the subject description!">{{ old('description') }}</textarea>
+                                    <textarea class="form-control" name="description" id="description" cols="30" rows="3" placeholder="Enter the topic description!">{{ old('description') ? old('description') : $topic->description }}</textarea>
                                 </div>
 
                                 <div>
