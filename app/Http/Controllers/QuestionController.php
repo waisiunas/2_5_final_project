@@ -56,7 +56,7 @@ class QuestionController extends Controller
         $data = [
             'topic_id' => $request->topic,
             'text' => $request->question,
-            'explanation' => $request->question,
+            'explanation' => $request->explanation,
             'count' => 0,
         ];
 
