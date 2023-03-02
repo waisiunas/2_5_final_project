@@ -49,7 +49,9 @@ class TopicController extends Controller
             'slug' => Str::slug($request->name)
         ];
 
-        return Topic::create($data) ? redirect()->back()->with(['success' => 'Magic has been spelled!']) : redirect()->back()->with(['error' => 'Magic has failed to spell!']);
+        Topic::create($data) ?  $message['success'] = 'Magic has been spelled!' : $message['error'] = 'Magic has failed to spell!';
+
+        return redirect()->back()->with($message);
     }
 
     /**
@@ -71,7 +73,10 @@ class TopicController extends Controller
      */
     public function edit(Topic $topic)
     {
-        //
+        return view('admin.topics.edit', [
+            'topic' => $topic,
+            'subjects' => Subject::all()
+        ]);
     }
 
     /**
@@ -83,7 +88,23 @@ class TopicController extends Controller
      */
     public function update(Request $request, Topic $topic)
     {
-        //
+        $request->validate([
+            'subject' => ['required'],
+            'name' => ['required'],
+        ]);
+
+        $data = [
+            'subject_id' => $request->subject,
+            'name' => $request->name,
+            'description' => $request->description,
+            'slug' => Str::slug($request->name)
+        ];
+
+        $message = [];
+
+        $topic->update($data) ? $message['success'] = 'Magic has been spelled!' : $message['error'] = 'Magic has failed to spell!';
+
+        return redirect()->back()->with($message);
     }
 
     /**
@@ -94,6 +115,8 @@ class TopicController extends Controller
      */
     public function destroy(Topic $topic)
     {
-        //
+        $topic->delete() ? $message['success'] = 'Magic has been spelled!' : $message['error'] = 'Magic has failed to spell!';
+
+        return redirect()->back()->with($message);
     }
 }
