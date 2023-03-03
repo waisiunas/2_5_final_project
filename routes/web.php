@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\auth\AuthController;
+use App\Http\Controllers\DynamicController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TopicController;
@@ -59,5 +60,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('question/{question}/edit', 'edit')->name('question.edit');
         Route::post('question/{question}/edit', 'update');
         Route::post('question/{question}/destroy', 'destroy')->name('question.delete');
+    });
+
+    Route::controller(DynamicController::class)->group(function () {
+        Route::post('subject/topics', 'fetch_topics')->name('subject.topics');
     });
 });

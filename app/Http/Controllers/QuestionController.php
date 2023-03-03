@@ -17,7 +17,9 @@ class QuestionController extends Controller
      */
     public function index()
     {
-        return view('admin.questions.index', ['questions' => Question::all()]);
+        return view('admin.questions.index', [
+            'questions' => Question::with('topic', 'choices')->get(),
+        ]);
     }
 
     /**

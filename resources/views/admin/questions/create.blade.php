@@ -27,6 +27,11 @@
                                         id="subject">
                                         <option value="" selected disabled hidden>Please select the subject!</option>
                                         @foreach ($subjects as $subject)
+                                            @php
+                                                if ($subject->id == old('subject')) {
+                                                    $subject_model = $subject;
+                                                }
+                                            @endphp
                                             <option value="{{ $subject->id }}"
                                                 {{ old('subject') == $subject->id ? 'selected' : '' }}>{{ $subject->name }}
                                             </option>
@@ -44,12 +49,27 @@
                                     <label for="topic" class="form-label">Topic</label>
                                     <select class="form-select @error('topic') is-invalid @enderror" name="topic"
                                         id="topic">
-                                        <option value="" selected disabled hidden>Please select the topic!</option>
-                                        @foreach ($topics as $topic)
-                                            <option value="{{ $topic->id }}"
-                                                {{ old('topic') == $topic->id ? 'selected' : '' }}>{{ $topic->name }}
+                                        @if (old('subject') || old('topic'))
+                                            @if (count($subject_model->topics) > 0)
+                                                <option value="" selected disabled hidden>Please select the topic!
+                                                </option>
+                                                @foreach ($topics as $topic)
+                                                    @if ($topic->subject_id == old('subject'))
+                                                        <option value="{{ $topic->id }}"
+                                                            {{ old('topic') == $topic->id ? 'selected' : '' }}>
+                                                            {{ $topic->name }}
+                                                        </option>
+                                                    @endif
+                                                @endforeach
+                                            @else
+                                                <option value="" selected disabled hidden>No Topic Found!
+                                                </option>
+                                            @endif
+                                        @else
+                                            <option value="" selected disabled hidden>Please select the subject first!
                                             </option>
-                                        @endforeach
+                                        @endif
+
                                     </select>
 
                                     @error('topic')
@@ -93,7 +113,8 @@
                                 <div class="mb-3">
                                     <label for="" class="form-label">Correct Choice</label>
                                     <input type="number" class="form-control @error('correct_choice') is-invalid @enderror"
-                                        name="correct_choice" id="correct_choice" value="{{ old('correct_choice') }}" placeholder="Enter the correct choice!">
+                                        name="correct_choice" id="correct_choice" value="{{ old('correct_choice') }}"
+                                        placeholder="Enter the correct choice!">
 
                                     @error('correct_choice')
                                         <div class="text-danger">
@@ -104,8 +125,8 @@
 
                                 <div class="mb-3">
                                     <label for="" class="form-label">Explanation</label>
-                                    <textarea class="form-control @error('explanation') is-invalid @enderror" name="explanation" id="explanation" cols="30"
-                                        rows="3" placeholder="Enter the explanation!">{{ old('explanation') }}</textarea>
+                                    <textarea class="form-control @error('explanation') is-invalid @enderror" name="explanation" id="explanation"
+                                        cols="30" rows="3" placeholder="Enter the explanation!">{{ old('explanation') }}</textarea>
 
                                     @error('explanation')
                                         <div class="text-danger">
@@ -126,4 +147,34 @@
             </div>
         </div>
     </main>
+
+    <script>
+        const subjectElement = document.querySelector('#subject');
+        const topicElement = document.querySelector('#topic');
+
+        subjectElement.addEventListener('change', function() {
+            const subjectElementValue = subjectElement.value;
+            const token = document.querySelector('input[name="_token"]').value;
+
+            const data = {
+                subjectId: subjectElementValue,
+                _token: token,
+            };
+
+            fetch('{{ route('admin.subject.topics') }}', {
+                    method: 'POST',
+                    body: JSON.stringify(data),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(result) {
+                    // console.log(result);
+                    topicElement.innerHTML = result;
+                });
+        });
+    </script>
 @endsection

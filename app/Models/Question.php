@@ -15,4 +15,12 @@ class Question extends Model
         'explanation',
         'count',
     ];
+
+    public function topic() {
+        return $this->belongsTo(Topic::class);
+    }
+
+    public function choices() {
+        return $this->hasMany(Choice::class);
+    }
 }

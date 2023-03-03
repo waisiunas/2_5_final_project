@@ -16,9 +16,47 @@
             <div class="row">
                 <div class="col-12">
                     <div class="card">
-                        <div class="card-body">
+                        <div class="card-body pb-0">
                             @include('partials.flash-messages')
                             @if (count($questions))
+                                @foreach ($questions as $question)
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    Subject: {{ $question->topic->subject->name }}
+                                                </div>
+                                                <div class="col-md-6">
+                                                    Topic: {{ $question->topic->name }}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="card-body pb-0">
+                                            <div class="row">
+                                                <div class="col-md-10">
+                                                    <h5>Question: {{ $question->text }}</h5>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <a href="" class="btn btn-primary">Edit</a>
+                                                    <a href="" class="btn btn-danger">Delete</a>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <ol>
+                                                        @foreach ($question->choices as $choice)
+                                                        <li>
+                                                            {{ $choice->text }} {{ $choice->is_correct == 1 ? "(Corrrect)" : "" }}
+                                                        </li>
+                                                        @endforeach
+
+                                                    </ol>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
                             @else
                                 <div class="alert alert-danger">
                                     No record Found!
