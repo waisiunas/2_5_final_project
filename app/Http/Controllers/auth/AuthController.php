@@ -30,7 +30,7 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        dd(Auth::logout());
+        Auth::logout();
         return redirect()->route('admin.login')->with(['success' => 'Successfully logged out']);
 
     }

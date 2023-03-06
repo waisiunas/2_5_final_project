@@ -6,10 +6,10 @@
     <main class="content">
         <div class="container-fluid p-0">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-6">
                     <h1 class="h3 mb-3">Add Question</h1>
                 </div>
-                <div class="col-md-6 text-end">
+                <div class="col-6 text-end">
                     <a href="{{ route('admin.questions') }}" class="btn btn-outline-primary">Back</a>
                 </div>
             </div>

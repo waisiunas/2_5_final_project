@@ -70,8 +70,7 @@ class QuestionController extends Controller
             for ($i = 1; $i < 5; $i++) {
                 if ($i == $request->correct_choice) {
                     $is_correct = 1;
-                }
-                else {
+                } else {
                     $is_correct = 0;
                 }
 
@@ -108,7 +107,11 @@ class QuestionController extends Controller
      */
     public function edit(Question $question)
     {
-        //
+        return view('admin.questions.edit', [
+            'question' => $question,
+            'subjects' => Subject::all(),
+            'topics' => Topic::all(),
+        ]);
     }
 
     /**
@@ -120,7 +123,46 @@ class QuestionController extends Controller
      */
     public function update(Request $request, Question $question)
     {
-        //
+        $request->validate([
+            'subject' => ['required'],
+            'topic' => ['required'],
+            'question' => ['required'],
+            'choice_1' => ['required'],
+            'choice_2' => ['required'],
+            'choice_3' => ['required'],
+            'choice_4' => ['required'],
+            'correct_choice' => ['required', 'numeric', 'min:1', 'max:4'],
+        ]);
+
+        $data = [
+            'topic_id' => $request->topic,
+            'text' => $request->question,
+            'explanation' => $request->explanation,
+            'count' => $question->count,
+        ];
+
+        if ($question->update($data)) {
+            $i = 1;
+            foreach ($question->choices as $choice) {
+
+                if ($i == $request->correct_choice) {
+                    $is_correct = 1;
+                } else {
+                    $is_correct = 0;
+                }
+
+                $data = [
+                    'text' => request('choice_' . $i),
+                    'is_correct' => $is_correct,
+                    'count' => $choice->count
+                ];
+                $choice->update($data);
+                $i++;
+            }
+            return back()->with(['success' => 'Magic has been spelled!']);
+        } else {
+            return back()->with(['error' => 'Magic has failed to spell!']);
+        }
     }
 
     /**
@@ -131,6 +173,8 @@ class QuestionController extends Controller
      */
     public function destroy(Question $question)
     {
-        //
+        $question->delete() ? $message['success'] = 'Magic has been spelled!' : $message['error'] = 'Magic has failed to spell!';
+
+        return redirect()->back()->with($message);
     }
 }

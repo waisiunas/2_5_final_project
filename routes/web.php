@@ -6,6 +6,7 @@ use App\Http\Controllers\DynamicController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TopicController;
+use App\Http\Middleware\Authenticate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 
@@ -24,16 +25,18 @@ Route::get('/', function () {
     return redirect()->route('admin.login');
 });
 
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::controller(AuthController::class)->prefix('admin')->name('admin.')->group(function () {
+    Route::get('login', 'login_view')->name('login');
+    Route::post('login', 'login');
+
+    Route::post('logout', 'logout')->name('logout');
+});
+
+Route::prefix('admin')->name('admin.')->middleware(Authenticate::class)->group(function () {
 
     Route::get('dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
-    Route::controller(AuthController::class)->group(function () {
-        Route::get('login', 'login_view')->name('login');
-        Route::post('login', 'login');
 
-        Route::post('logout', 'logout')->name('logout');
-    });
 
     Route::controller(SubjectController::class)->group(function () {
         Route::get('subjects', 'index')->name('subjects');

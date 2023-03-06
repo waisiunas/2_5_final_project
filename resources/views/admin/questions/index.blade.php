@@ -20,7 +20,7 @@
                             @include('partials.flash-messages')
                             @if (count($questions))
                                 @foreach ($questions as $question)
-                                    <div class="card">
+                                    <div class="card shadow-lg">
                                         <div class="card-header">
                                             <div class="row">
                                                 <div class="col-md-6">
@@ -38,8 +38,12 @@
                                                     <h5>Question: {{ $question->text }}</h5>
                                                 </div>
                                                 <div class="col-md-2">
-                                                    <a href="" class="btn btn-primary">Edit</a>
-                                                    <a href="" class="btn btn-danger">Delete</a>
+                                                    <a href="{{ route('admin.question.edit', $question) }}" class="btn btn-primary">Edit</a>
+                                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                                        data-bs-target="#deleteModal"
+                                                        onclick="deleteQuestion({{ $question }})">
+                                                        Delete
+                                                    </button>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -52,6 +56,11 @@
                                                         @endforeach
 
                                                     </ol>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <h5>Explanation: {{ $question->explanation }}</h5>
                                                 </div>
                                             </div>
                                         </div>
@@ -70,10 +79,10 @@
     </main>
 
     <script>
-        function deletetopic(topic) {
+        function deleteQuestion(question) {
             const deleteFormElement = document.getElementById('deleteForm');
-            var url = "{{ route('admin.topic.delete', ':id') }}";
-            url = url.replace(':id', topic.id);
+            var url = "{{ route('admin.question.delete', ':id') }}";
+            url = url.replace(':id', question.id);
             deleteFormElement.action = url;
         }
     </script>
