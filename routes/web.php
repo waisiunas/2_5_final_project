@@ -3,6 +3,8 @@
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\auth\AuthController;
 use App\Http\Controllers\DynamicController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PagesController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TopicController;
@@ -21,9 +23,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return redirect()->route('admin.login');
-});
+Route::get('/', [HomeController::class, 'home'])->name('home');
 
 Route::controller(AuthController::class)->prefix('admin')->name('admin.')->group(function () {
     Route::get('login', 'login_view')->name('login');
@@ -35,8 +35,6 @@ Route::controller(AuthController::class)->prefix('admin')->name('admin.')->group
 Route::prefix('admin')->name('admin.')->middleware(Authenticate::class)->group(function () {
 
     Route::get('dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-
-
 
     Route::controller(SubjectController::class)->group(function () {
         Route::get('subjects', 'index')->name('subjects');
@@ -68,4 +66,9 @@ Route::prefix('admin')->name('admin.')->middleware(Authenticate::class)->group(f
     Route::controller(DynamicController::class)->group(function () {
         Route::post('subject/topics', 'fetch_topics')->name('subject.topics');
     });
+});
+
+Route::controller(PagesController::class)->group(function () {
+    Route::get('select-subject/prepare', 'subjects')->name('select.subjects.prepare');
+    Route::get('select-topic/prepare/{subject:slug}', 'topics')->name('select.topics.prepare');
 });
