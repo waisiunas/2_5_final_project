@@ -27,7 +27,7 @@
                         <div class="col-md-4">
                             <div class="card border shadow">
                                 <div class="card-body">
-                                    <a href="#" class="d-block text-decoration-none h4 text-center">{{ $topic->name }}</a>
+                                    <a href="{{ route('prepare', [$topic->subject, $topic]) }}" class="d-block text-decoration-none h4 text-center">{{ $topic->name }}</a>
                                 </div>
                             </div>
                         </div>

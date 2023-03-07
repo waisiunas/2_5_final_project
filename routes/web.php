@@ -71,4 +71,5 @@ Route::prefix('admin')->name('admin.')->middleware(Authenticate::class)->group(f
 Route::controller(PagesController::class)->group(function () {
     Route::get('select-subject/prepare', 'subjects')->name('select.subjects.prepare');
     Route::get('select-topic/prepare/{subject:slug}', 'topics')->name('select.topics.prepare');
+    Route::get('prepare/{subject:slug}/{topic:slug}', 'prepare')->name('prepare');
 });
