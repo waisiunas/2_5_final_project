@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Choice;
 use App\Models\Topic;
 use Illuminate\Http\Request;
 
@@ -19,5 +20,22 @@ class DynamicController extends Controller
             $output = '<option value="">No Topic Found!</option>';
         }
         echo json_encode($output);
+    }
+
+    public function check_question() {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $is_correct = Choice::where([
+            ['id', $data['choice_id']],
+            ['is_correct', 1],
+        ])->first();
+
+        if ($is_correct) {
+            echo json_encode(true);
+        } else {
+            echo json_encode(false);
+        }
+
+
+
     }
 }

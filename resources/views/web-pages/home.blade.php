@@ -35,7 +35,7 @@
                             <p>
                                 Lorem ipsum, dolor sit amet consectetur adipisicing elit. Cum excepturi obcaecati quod tenetur eveniet dolor odit quo officiis, natus similique repudiandae facilis quae beatae, odio corrupti, quaerat autem amet sequi.
                             </p>
-                            <p><a class="btn btn-secondary" href="{{ route('select.subjects.prepare') }}">View details &raquo;</a></p>
+                            <p><a class="btn btn-secondary" href="{{ route('select.subjects.prepare') }}">Start Diving &raquo;</a></p>
                         </div>
                     </div>
 
@@ -47,7 +47,7 @@
                             <p>
                                 Lorem ipsum, dolor sit amet consectetur adipisicing elit. Cum excepturi obcaecati quod tenetur eveniet dolor odit quo officiis, natus similique repudiandae facilis quae beatae, odio corrupti, quaerat autem amet sequi.
                             </p>
-                            <p><a class="btn btn-secondary" href="">View details &raquo;</a></p>
+                            <p><a class="btn btn-secondary" href="{{ route('select.subjects.practice') }}">Dive Deeper &raquo;</a></p>
                         </div>
                     </div>
 
@@ -59,7 +59,7 @@
                             <p>
                                 Lorem ipsum, dolor sit amet consectetur adipisicing elit. Cum excepturi obcaecati quod tenetur eveniet dolor odit quo officiis, natus similique repudiandae facilis quae beatae, odio corrupti, quaerat autem amet sequi.
                             </p>
-                            <p><a class="btn btn-secondary" href="#">View details &raquo;</a></p>
+                            <p><a class="btn btn-secondary" href="#">Final Dive &raquo;</a></p>
                         </div>
                     </div>
 
