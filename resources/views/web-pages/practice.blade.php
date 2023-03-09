@@ -19,7 +19,7 @@
 
                             <div id="msg"></div>
 
-                            <h5>Q. {{ $question->text }}</h5>
+                            <h5 id="question">Q. {{ $question->text }}</h5>
 
                             @csrf
                             <ul class="list-group">
@@ -28,7 +28,7 @@
                                         <label class="d-block">
                                             <input class="with-gap" name="choice" value="{{ $choice->id }}"
                                                 type="radio">
-                                            <span>{{ $choice->text }}</span>
+                                            <span id="choice_{{ $loop->iteration }}">{{ $choice->text }}</span>
                                         </label>
                                     </li>
                                 @endforeach
@@ -41,6 +41,8 @@
                     <div class="card">
                         <div class="card-body">
                             <h2>Live Evaluation</h2>
+                            <ol id="list">
+                            </ol>
                         </div>
                     </div>
                 </div>
@@ -61,15 +63,26 @@
         }
 
         const btnSubmitElement = document.getElementById('btn-submit');
+        const questionElement = document.getElementById('question');
+        const choiceOneElement = document.getElementById('choice_1');
+        const choiceTwoElement = document.getElementById('choice_2');
+        const choiceThreeElement = document.getElementById('choice_3');
+        const choiceFourElement = document.getElementById('choice_4');
+        currentQuestion = 1;
         btnSubmitElement.addEventListener('click', function() {
             const selectedElement = document.querySelector('input[name="choice"]:checked');
-            const token = document.querySelector('input[name="_token"]').value;
+            const tokenElement = document.querySelector('input[name="_token"]');
+            const token = tokenElement.value;
 
-            let selectedValue = selectedElement.value;
+            let selectedValue = '';
+            if (selectedElement) {
+                selectedValue = selectedElement.value;
+            }
 
             if (selectedElement) {
                 const data = {
                     choice_id: selectedValue,
+                    currentQuestion: currentQuestion,
                     _token: token,
                 };
 
@@ -84,13 +97,16 @@
                         return response.json();
                     })
                     .then(function(result) {
-                        if (result === true) {
-                            console.log('Correct Choice');
+                        tokenElement.value = result['new_token'];
+                        currentQuestion++;
+                        const listElement = document.getElementById('list');
+                        if (result.status == 'Correct') {
+                            listElement.innerHTML += '<li class="text-success">Correct</li>';
                         } else {
-                            console.log('Incorrect Choice');
+                            listElement.innerHTML += '<li class="text-danger">Incorrect</li>';
                         }
-                        // console.log(result);
-                        // topicElement.innerHTML = result;
+                        questionElement.innerText = 'Q. ' + result.next_question.text;
+                        console.log(result);
                     });
             } else {
                 const msgElement = document.getElementById('msg');

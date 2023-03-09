@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Choice;
 use App\Models\Topic;
+use App\Models\Choice;
+use App\Models\Question;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class DynamicController extends Controller
 {
@@ -24,16 +26,33 @@ class DynamicController extends Controller
 
     public function check_question() {
         $data = json_decode(file_get_contents('php://input'), true);
-        $is_correct = Choice::where([
-            ['id', $data['choice_id']],
-            ['is_correct', 1],
+        $choice = Choice::with('question')->where([
+            ['id', $data['choice_id']]
         ])->first();
 
-        if ($is_correct) {
-            echo json_encode(true);
+        if ($choice->is_correct == 1) {
+            $status = 'Correct';
         } else {
-            echo json_encode(false);
+            $status = 'Incorrect';
         }
+
+        // $questions = Question::where('topic_id', $choice->question->topic_id)->get();
+        $questions = $choice->question->topic->questions;
+        $next_question = $questions->get($data['currentQuestion']);
+
+        Session::put('_token', sha1(microtime()));
+        $new_token = session()->get('_token');
+        echo json_encode([
+            'new_token' => $new_token,
+            'status' => $status,
+            'next_question' => $next_question,
+            'choices' => $next_question->choices
+        ]);
+        // if ($choice) {
+        //     echo json_encode(true);
+        // } else {
+        //     echo json_encode(false);
+        // }
 
 
 

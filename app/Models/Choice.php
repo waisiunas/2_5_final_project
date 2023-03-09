@@ -15,4 +15,8 @@ class Choice extends Model
         'is_correct',
         'count',
     ];
+
+    public function question() {
+        return $this->belongsTo(Question::class);
+    }
 }
