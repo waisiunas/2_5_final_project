@@ -65,6 +65,9 @@ Route::prefix('admin')->name('admin.')->middleware(Authenticate::class)->group(f
 
     Route::controller(DynamicController::class)->group(function () {
         Route::post('subject/topics', 'fetch_topics')->name('subject.topics');
+        Route::post('topics/fetch/all', 'fetch_all_topics')->name('topics.fetch.all');
+        Route::post('question/subject/topic', 'fetch_questions_topic')->name('question.subject.topic');
+        Route::post('question/topic/questions', 'fetch_questions_all')->name('question.topic.questions');
     });
 });
 
@@ -76,7 +79,6 @@ Route::controller(PagesController::class)->group(function () {
     Route::get('select-subject/practice', 'subjects')->name('select.subjects.practice');
     Route::get('select-topic/practice/{subject:slug}', 'topics')->name('select.topics.practice');
     Route::get('practice/{subject:slug}/{topic:slug}', 'practice')->name('practice');
-
 });
 
 Route::controller(DynamicController::class)->group(function () {

@@ -19,6 +19,7 @@ class QuestionController extends Controller
     {
         return view('admin.questions.index', [
             'questions' => Question::with('topic', 'choices')->get(),
+            'subjects' => Subject::all(),
         ]);
     }
 

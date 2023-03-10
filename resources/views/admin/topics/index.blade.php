@@ -18,7 +18,24 @@
                     <div class="card">
                         <div class="card-body">
                             @include('partials.flash-messages')
-                            @if (count($topics))
+
+                            <div class="control">
+                                <div class="select">
+                                        <label for="subject" class="form-label">Subject</label>
+                                        <select class="form-select" name="subject" id="subject">
+                                        <option value="" selected disabled hidden>Please select the subject!</option>
+                                        @foreach ($subjects as $subject)
+                                            <option value="{{ $subject->id }}">{{ $subject->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="all_topics"></div>
+                        {{--
+
+                        @if (count($topics))
                                 <table class="table table-bordered">
                                     <thead>
                                         <tr>
@@ -55,11 +72,13 @@
                                     No record Found!
                                 </div>
                             @endif
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
+        </div> --}}
+
+
     </main>
 
     <script>
@@ -69,5 +88,36 @@
             url = url.replace(':id', topic.id);
             deleteFormElement.action = url;
         }
+    </script>
+
+
+    <script>
+        const subjectElement = document.querySelector('#subject');
+        const allTopicElement = document.querySelector('#all_topics');
+
+        subjectElement.addEventListener('change', function() {
+            const subjectElementValue = subjectElement.value;
+            const token = document.querySelector('input[name="_token"]').value;
+
+            const data = {
+                subjectId: subjectElementValue,
+                _token: token,
+            }
+
+            fetch('{{ route('admin.topics.fetch.all') }}', {
+                    method: 'POST',
+                    body: JSON.stringify(data),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(result) {
+                    allTopicElement.innerHTML = result;
+                    // console.log(result);
+                })
+        })
     </script>
 @endsection

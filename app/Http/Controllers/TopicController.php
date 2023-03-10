@@ -16,7 +16,10 @@ class TopicController extends Controller
      */
     public function index()
     {
-        return view('admin.topics.index', ['topics' => Topic::with('subject')->get()]);
+        return view('admin.topics.index', [
+            'subjects' => Subject::all(),
+            'topics' => Topic::with('subject')->get(),
+        ]);
     }
 
     /**

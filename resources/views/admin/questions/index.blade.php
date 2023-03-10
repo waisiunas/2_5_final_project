@@ -18,6 +18,57 @@
                     <div class="card">
                         <div class="card-body pb-0">
                             @include('partials.flash-messages')
+
+                            <div class="mb-3">
+                                <label for="subject" class="form-label">Subject</label>
+                                <select class="form-select @error('subject') is-invalid @enderror" name="subject"
+                                    id="subject">
+                                    <option value="" selected disabled hidden>Please select the subject!</option>
+                                    @foreach ($subjects as $subject)
+                                        @php
+                                            if ($subject->id == old('subject')) {
+                                                $subject_model = $subject;
+                                            }
+                                        @endphp
+                                        <option value="{{ $subject->id }}"
+                                            {{ old('subject') == $subject->id ? 'selected' : '' }}>{{ $subject->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="topic" class="form-label">Topic</label>
+                                <select class="form-select" name="topic" id="topic">
+                                    @if (old('subject') || old('topic'))
+                                        @if (count($subject_model->topics) > 0)
+                                            <option value="" selected disabled hidden>Please select the topic!
+                                            </option>
+                                            @foreach ($topics as $topic)
+                                                @if ($topic->subject_id == old('subject'))
+                                                    <option value="{{ $topic->id }}"
+                                                        {{ old('topic') == $topic->id ? 'selected' : '' }}>
+                                                        {{ $topic->name }}
+                                                    </option>
+                                                @endif
+                                            @endforeach
+                                        @else
+                                            <option value="" selected disabled hidden>No Topic Found!
+                                            </option>
+                                        @endif
+                                    @else
+                                        <option value="" selected disabled hidden>Please select the subject first!
+                                        </option>
+                                    @endif
+
+                                </select>
+                            </div>
+
+                            <div id="all_questions">
+                            </div>
+
+                            {{--
                             @if (count($questions))
                                 @foreach ($questions as $question)
                                     <div class="card shadow-lg">
@@ -32,7 +83,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="card-body pb-0">
+                                        <div class="card-header pb-0">
                                             <div class="row">
                                                 <div class="col-md-10">
                                                     <h5>Question: {{ $question->text }}</h5>
@@ -70,7 +121,7 @@
                                 <div class="alert alert-danger">
                                     No record Found!
                                 </div>
-                            @endif
+                            @endif --}}
                         </div>
                     </div>
                 </div>
@@ -85,5 +136,68 @@
             url = url.replace(':id', question.id);
             deleteFormElement.action = url;
         }
+    </script>
+
+
+    {{-- To fetch all topics --}}
+    <script>
+        const subjectElement = document.querySelector('#subject');
+        const topicElement = document.querySelector('#topic');
+
+        subjectElement.addEventListener('change', function() {
+            const subjectElementValue = subjectElement.value;
+            const token = document.querySelector('input[name="_token"]').value;
+
+            const data = {
+                subjectId: subjectElementValue,
+                _token: token,
+            }
+
+            fetch('{{ route('admin.question.subject.topic') }}', {
+                    method: 'POST',
+                    body: JSON.stringify(data),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(result) {
+                    topicElement.innerHTML = result;
+                })
+        })
+    </script>
+
+    {{-- To fetch all questions --}}
+    <script>
+
+        const topicsElement = document.querySelector('#topic');
+        const questionElement = document.querySelector('#all_questions');
+
+        topicsElement.addEventListener('change', function() {
+            const topicElementValue = topicsElement.value;
+            const token = document.querySelector('input[name="_token"]').value;
+
+            const data = {
+                topicId: topicElementValue,
+                _token: token,
+            }
+            // console.log(data);
+            fetch('{{ route('admin.question.topic.questions') }}', {
+                    method: 'POST',
+                    body: JSON.stringify(data),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(result) {
+                    questionElement.innerHTML = result;
+                    // console.log(result);
+                })
+        })
     </script>
 @endsection
