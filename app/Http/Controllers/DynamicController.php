@@ -99,15 +99,30 @@ class DynamicController extends Controller
         // $questions = Question::where('topic_id', $question->topic_id)->get();
         // $questions = $choice->question->topic->questions;
 
-        $next_question = $choice->question->topic->questions->get($data['currentQuestion']);
 
-        Session::put('_token', sha1(microtime()));
-        $new_token = session()->get('_token');
-        echo json_encode([
-            'new_token' => $new_token,
-            'status' => $status,
-            'next_question' => $next_question,
-            'choices' => $next_question->choices
-        ]);
+
+        if ($data['currentQuestion'] < count($choice->question->topic->questions)) {
+
+            $next_question = $choice->question->topic->questions->get($data['currentQuestion']);
+
+            Session::put('_token', sha1(microtime()));
+            $new_token = session()->get('_token');
+
+            $response = [
+                'new_token' => $new_token,
+                'status' => $status,
+                'current' => $data['currentQuestion'],
+                'total' => count($choice->question->topic->questions),
+                'next_question' => $next_question,
+                'choices' => $next_question->choices
+            ];
+        } else {
+            $response = [
+                'status' => $status,
+                'end' => true
+            ];
+        }
+
+        echo json_encode($response);
     }
 }

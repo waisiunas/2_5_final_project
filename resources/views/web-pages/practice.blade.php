@@ -26,14 +26,15 @@
                                 @foreach ($question->choices as $choice)
                                     <li class="list-group-item">
                                         <label class="d-block">
-                                            <input class="with-gap" name="choice" value="{{ $choice->id }}"
-                                                type="radio">
-                                            <span id="choice_{{ $loop->iteration }}">{{ $choice->text }}</span>
+                                            <input class="with-gap" name="choice" id="choice_id_{{ $loop->iteration }}"
+                                                value="{{ $choice->id }}" type="radio">
+                                            <span id="choice_text_{{ $loop->iteration }}">{{ $choice->text }}</span>
                                         </label>
                                     </li>
                                 @endforeach
                             </ul>
                             <button class="btn btn-primary mt-2" id="btn-submit">Submit</button>
+                            <a href="{{ route('home') }}" class="btn btn-primary mt-2 d-none" id="btn-back">Home</a>
                         </div>
                     </div>
                 </div>
@@ -63,11 +64,20 @@
         }
 
         const btnSubmitElement = document.getElementById('btn-submit');
+        const btnBackElement = document.getElementById('btn-back');
         const questionElement = document.getElementById('question');
-        const choiceOneElement = document.getElementById('choice_1');
-        const choiceTwoElement = document.getElementById('choice_2');
-        const choiceThreeElement = document.getElementById('choice_3');
-        const choiceFourElement = document.getElementById('choice_4');
+        const currentElement = document.getElementById('current');
+
+        const choiceIdOneElement = document.getElementById('choice_id_1');
+        const choiceIdTwoElement = document.getElementById('choice_id_2');
+        const choiceIdThreeElement = document.getElementById('choice_id_3');
+        const choiceIdFourElement = document.getElementById('choice_id_4');
+
+        const choiceTextOneElement = document.getElementById('choice_text_1');
+        const choiceTextTwoElement = document.getElementById('choice_text_2');
+        const choiceTextThreeElement = document.getElementById('choice_text_3');
+        const choiceTextFourElement = document.getElementById('choice_text_4');
+
         currentQuestion = 1;
         btnSubmitElement.addEventListener('click', function() {
             const selectedElement = document.querySelector('input[name="choice"]:checked');
@@ -97,16 +107,43 @@
                         return response.json();
                     })
                     .then(function(result) {
-                        tokenElement.value = result['new_token'];
-                        currentQuestion++;
                         const listElement = document.getElementById('list');
+
                         if (result.status == 'Correct') {
                             listElement.innerHTML += '<li class="text-success">Correct</li>';
                         } else {
                             listElement.innerHTML += '<li class="text-danger">Incorrect</li>';
                         }
-                        questionElement.innerText = 'Q. ' + result.next_question.text;
-                        console.log(result);
+
+                        selectedElement.checked = false;
+
+                        if (result.end == true) {
+
+                            tokenElement.remove();
+                            btnSubmitElement.remove();
+                            btnBackElement.classList.remove('d-none');
+                        } else {
+                            tokenElement.value = result['new_token'];
+                            currentQuestion++;
+
+                            questionElement.innerText = 'Q. ' + result.next_question.text;
+
+                            choiceIdOneElement.value = result.choices[0].id;
+                            choiceIdTwoElement.value = result.choices[1].id;
+                            choiceIdThreeElement.value = result.choices[2].id;
+                            choiceIdFourElement.value = result.choices[3].id;
+
+                            choiceTextOneElement.innerText = result.choices[0].text;
+                            choiceTextTwoElement.innerText = result.choices[1].text;
+                            choiceTextThreeElement.innerText = result.choices[2].text;
+                            choiceTextFourElement.innerText = result.choices[3].text;
+
+                            currentElement.innerText = currentQuestion;
+
+                        }
+
+                        // console.log(currentQuestion);
+                        // console.table(result);
                     });
             } else {
                 const msgElement = document.getElementById('msg');
