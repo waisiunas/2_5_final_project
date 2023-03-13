@@ -82,7 +82,7 @@
                                 <div class="mb-3">
                                     <label for="" class="form-label">Question</label>
                                     <textarea class="form-control @error('question') is-invalid @enderror" name="question" id="question" cols="30"
-                                        rows="3" placeholder="Enter the question!">{{ old('question') }}</textarea>
+                                        rows="2" placeholder="Enter the question!">{{ old('question') }}</textarea>
 
                                     @error('question')
                                         <div class="text-danger">
@@ -126,9 +126,21 @@
                                 <div class="mb-3">
                                     <label for="" class="form-label">Explanation</label>
                                     <textarea class="form-control @error('explanation') is-invalid @enderror" name="explanation" id="explanation"
-                                        cols="30" rows="3" placeholder="Enter the explanation!">{{ old('explanation') }}</textarea>
+                                        cols="30" rows="2" placeholder="Enter the explanation!">{{ old('explanation') }}</textarea>
 
                                     @error('explanation')
+                                        <div class="text-danger">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="" class="form-label">Keywords</label>
+                                    <textarea class="form-control @error('keywords') is-invalid @enderror" name="keywords" id="keywords"
+                                        cols="30" rows="2" placeholder="Enter the keywords!">{{ old('keywords') }}</textarea>
+
+                                    @error('keywords')
                                         <div class="text-danger">
                                             {{ $message }}
                                         </div>

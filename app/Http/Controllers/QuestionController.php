@@ -54,12 +54,14 @@ class QuestionController extends Controller
             'choice_3' => ['required'],
             'choice_4' => ['required'],
             'correct_choice' => ['required', 'numeric', 'min:1', 'max:4'],
+            'keywords' => ['required'],
         ]);
 
         $data = [
             'topic_id' => $request->topic,
             'text' => $request->question,
             'explanation' => $request->explanation,
+            'keywords' => $request->keywords,
             'count' => 0,
         ];
 
@@ -133,12 +135,14 @@ class QuestionController extends Controller
             'choice_3' => ['required'],
             'choice_4' => ['required'],
             'correct_choice' => ['required', 'numeric', 'min:1', 'max:4'],
+            'keywords' => ['required'],
         ]);
 
         $data = [
             'topic_id' => $request->topic,
             'text' => $request->question,
             'explanation' => $request->explanation,
+            'keywords' => $request->keywords,
             'count' => $question->count,
         ];
 

@@ -13,6 +13,7 @@ class Question extends Model
         'topic_id',
         'text',
         'explanation',
+        'keywords',
         'count',
     ];
 

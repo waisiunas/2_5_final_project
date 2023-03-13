@@ -51,11 +51,13 @@ class DynamicController extends Controller
         if (count($questions) > 0) {
             $output = '';
             foreach ($questions as $question) {
+                $array = explode(',', $question->keywords);
+                $string = implode(', #', $array);
                 $output .= '<div class="card shadow-lg"><div class="card-header pb-0"><div class="row"><div class="col-md-10"><h5>Question:' . $question->text . '</h5></div><div class="col-md-2"><a href="' . route('admin.question.edit', $question) . '" class="btn btn-primary">Edit</a><button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" onclick="deleteQuestion(' . $question . ')">Delete</button></div></div><div class="row"><div class="col-12"><ol>';
                 foreach ($question->choices as $choice) {
                     $output .= '<li>' . $choice->text . '</li>';
                 }
-                $output .= '</ol></div></div><div class="row"><div class="col-md-12"><h5>Explanation:' . $question->explanation . '</h5></div></div></div></div>';
+                $output .= '</ol></div></div><div class="row"><div class="col-md-12"><h5>Keywords: #' . $string . '</h5></div></div><div class="row"><div class="col-md-12"><h5>Explanation: ' . $question->explanation . '</h5></div></div></div></div>';
             }
         } else {
             $output = '<option value="">No Topic Found!</option>';
